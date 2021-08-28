@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tic Tac Toe</title>
+    <style>
+      /* Global style */
+      body {
+        margin: 0;
+        user-select: none;
+        color: white;
+        font-size: 4.5rem;
+      }
+      @media (max-width: 400px), (max-height: 400px) {
+        body {
+          font-size: 3rem;
+        }
+      }
+
+      /* Utilities style */
+      .hide {
+        display: none !important;
+      }
+      .hover:hover {
+        opacity: 0.8;
+      }
+      .no-click {
+        pointer-events: none;
+      }
+      .center-flex {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .center-absolute {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+      /* Components style */
+      .card {
+        background-color: lightskyblue;
+        width: 100px;
+        height: 120px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      @media (max-width: 400px), (max-height: 400px) {
+        .card {
+          width: 60px;
+          height: 60px;
+        }
+      }
+
+      /* Game Stats style */
+      .user-selection,
+      .result {
+        z-index: 1;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: lightblue;
+      }
+      .user-selection h1 {
+        position: absolute;
+        top: 0;
+        width: 100%;
+        text-align: center;
+        font-size: 75px;
+        color: whitesmoke;
+      }
+      .user-selection .card {
+        margin-top: 55px;
+      }
+      @media (max-width: 400px), (max-height: 400px) {
+        .user-selection h1 {
+          font-size: 50px;
+        }
+      }
+      .result {
+        flex-direction: column;
+      }
+      .result button {
+        font-size: 20px;
+        padding: 10px;
+        background-color: #00bcd4;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+        color: inherit;
+      }
+
+      /* Game Board style */
+      .board {
+        display: grid;
+        gap: 15px;
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+      }
+      .board .win-line {
+        position: absolute;
+        background-color: black;
+        animation-duration: 0.3s;
+        animation-timing-function: linear;
+      }
+
+      /* Vertical Line */
+      .win-line.vert {
+        width: 2px;
+        height: 110%;
+        top: -5%;
+        animation-name: vert;
+      }
+      @keyframes vert {
+        0% {
+          height: 0;
+        }
+        50% {
+          height: 55%;
+        }
+        100% {
+          height: 110%;
+        }
+      }
+      .win-line.left {
+        left: 50px;
+      }
+      .win-line.center {
+        left: 50% !important;
+        transform: translateX(-50%);
+      }
+      .win-line.right {
+        right: 50px;
+      }
+      @media (max-width: 400px) {
+        .win-line.left {
+          left: 30px;
+        }
+        .win-line.right {
+          right: 30px;
+        }
+      }
+
+      /* Horizontal Line */
+      .win-line.horz {
+        left: -5%;
+        width: 110%;
+        height: 2px;
+        animation-name: horz;
+      }
+      @keyframes horz {
+        0% {
+          width: 0;
+        }
+        50% {
+          width: 55%;
+        }
+        100% {
+          width: 110%;
+        }
+      }
+      .win-line.top {
+        top: 60px;
+      }
+      .win-line.middle {
+        top: 50%;
+        transform: translateY(-50%);
+      }
+      .win-line.bottom {
+        bottom: 60px;
+      }
+      @media (max-width: 400px) {
+        .win-line.top {
+          top: 30px;
+        }
+        .win-line.bottom {
+          bottom: 30px;
+        }
+      }
+
+      /* Diagonal Line */
+      .win-line.diag {
+        top: -5%;
+        left: 164px;
+        width: 2px;
+        height: 110%;
+      }
+
+      .win-line.top-left {
+        transform: skewX(-320deg);
+        animation-name: diag-top-left;
+      }
+      @keyframes diag-top-left {
+        0% {
+          height: 0;
+          left: -16px;
+        }
+        50% {
+          height: 55%;
+          left: 74px;
+        }
+        100% {
+          height: 110%;
+        }
+      }
+
+      .win-line.top-right {
+        transform: skewX(320deg);
+        animation-name: diag-top-right;
+      }
+      @keyframes diag-top-right {
+        0% {
+          height: 0;
+          left: 104.3%;
+        }
+        50% {
+          height: 55%;
+          left: 77%;
+        }
+        100% {
+          height: 110%;
+        }
+      }
+
+      @media (max-width: 400px) {
+        .win-line.diag {
+          left: 103px;
+        }
+        .win-line.top-right {
+          transform: skewX(-45deg);
+        }
+        .win-line.top-left {
+          transform: skewX(45deg);
+        }
+        @keyframes diag-top-left {
+          0% {
+            height: 0;
+            left: -12px;
+          }
+          50% {
+            height: 55%;
+            left: 45px;
+          }
+          100% {
+            height: 110%;
+          }
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="user-selection center-flex">
+      <h1>Tic Tac Toe</h1>
+      <div style="margin-right: 20px" class="card center-flex hover">X</div>
+      <div class="card center-flex hover">O</div>
+    </div>
+
+    <div class="board center-absolute">
+      <div class="card center-flex hover"></div>
+      <div class="card center-flex hover"></div>
+      <div class="card center-flex hover"></div>
+      <div class="card center-flex hover"></div>
+      <div class="card center-flex hover"></div>
+      <div class="card center-flex hover"></div>
+      <div class="card center-flex hover"></div>
+      <div class="card center-flex hover"></div>
+      <div class="card center-flex hover"></div>
+    </div>
+
+    <div class="result center-flex hide">
+      <button class="hover" onclick="location.reload()">Play Again</button>
+    </div>
+
+    <script>
+      // Global Variables
+      const cards = document.querySelectorAll(".board .card");
+      let user,
+        bot,
+        botCards,
+        botRoleDuration = 500,
+        activeGame = false;
+
+      // Helper function
+      function show(target) {
+        document.querySelector(target).classList.remove("hide");
+      }
+      function hide(target) {
+        document.querySelector(target).classList.add("hide");
+      }
+      function randomNum(arr) {
+        return Math.floor(Math.random() * arr.length);
+      }
+
+      function noClick(target) {
+        typeof target === "string"
+          ? document.querySelector(target).classList.add("no-click")
+          : target.classList.add("no-click");
+      }
+      function click(target) {
+        document.querySelector(target).classList.remove("no-click");
+      }
+
+      function role(target, player) {
+        if (activeGame) {
+          noClick("body");
+          noClick(target);
+
+          if (player === "user") {
+            target.innerText = user;
+          }
+
+          if (player === "bot") {
+            setTimeout(() => {
+              target.innerText = bot;
+              checkForWinner(); // Win Condition
+            }, botRoleDuration);
+          }
+
+          setTimeout(() => click("body"), botRoleDuration + 10);
+        }
+      }
+      function userRole(target) {
+        role(target, "user");
+        checkForWinner(); // Win Condition
+      }
+      function botRole(target) {
+        let selectedCard;
+        botCards = Array.from(cards).filter((card) => !card.hasChildNodes());
+
+        if (botCards.length !== 0) {
+          target
+            ? (selectedCard = target[randomNum(target)])
+            : (selectedCard = botCards[randomNum(botCards)]);
+
+          role(selectedCard, "bot");
+        }
+      }
+
+      function winLine(index) {
+        const divNode = document.createElement("div");
+        const lineClasses = divNode.classList;
+        divNode.className = "win-line";
+
+        switch (index) {
+          // Horizontal Cases
+          case 0:
+            lineClasses.add("horz", "top");
+            break;
+          case 1:
+            lineClasses.add("horz", "middle");
+            break;
+          case 2:
+            lineClasses.add("horz", "bottom");
+            break;
+
+          // Vertical Cases
+          case 3:
+            lineClasses.add("vert", "left");
+            break;
+          case 4:
+            lineClasses.add("vert", "center");
+            break;
+          case 5:
+            lineClasses.add("vert", "right");
+            break;
+
+          // Diagonal Cases
+          case 6:
+            lineClasses.add("diag", "top-left");
+            break;
+          case 7:
+            lineClasses.add("diag", "top-right");
+            break;
+        }
+
+        document.querySelector(".board").appendChild(divNode);
+      }
+      function checkForWinner() {
+        const winConditions = [
+          [0, 1, 2],
+          [3, 4, 5],
+          [6, 7, 8],
+          [0, 3, 6],
+          [1, 4, 7],
+          [2, 5, 8],
+          [0, 4, 8],
+          [2, 4, 6],
+        ];
+
+        winConditions.forEach((winCondition, i) => {
+          let a = cards[winCondition[0]].innerText,
+            b = cards[winCondition[1]].innerText,
+            c = cards[winCondition[2]].innerText;
+
+          if (a !== "" || b !== "" || c !== "") {
+            if (a === b && b === c) {
+              winLine(i);
+              showResults(`${a} wins`);
+            }
+          }
+        });
+      }
+      function draw() {
+        // Draw Condition if bot = O
+        botCards.length === 0 && showResults("Draw");
+
+        // Draw Condition if bot = X
+        (bot === "X") & (botCards.length - 1 === 0) && showResults("Draw");
+      }
+      function showResults(word) {
+        if (activeGame) {
+          const paragraph = document.createElement("p");
+          paragraph.innerText = word;
+          document.querySelector(".result").prepend(paragraph);
+
+          activeGame = false;
+          setTimeout(() => show(".result"), botRoleDuration * 2);
+        }
+      }
+
+      // Set User & Bot Letter
+      document.querySelectorAll(".user-selection div").forEach((card) => {
+        card.addEventListener("click", (e) => {
+          user = e.target.innerText;
+          bot = user === "X" ? "O" : "X";
+          activeGame = true;
+          hide(".user-selection");
+          bot === "X" && botRole(cards); // X starts first
+        });
+      });
+
+      // Game Logic
+      cards.forEach((card) => {
+        card.addEventListener("click", (e) => {
+          // User Role
+          userRole(e.target);
+
+          // Bot Role
+          botRole();
+
+          // Draw Condition
+          draw();
+        });
+      });
+    </script>
+  </body>
+</html>
