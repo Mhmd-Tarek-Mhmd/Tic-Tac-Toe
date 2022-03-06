@@ -1,7 +1,7 @@
 # Tic Tac Toe
 
 
-## <a href="https://disney-clone-d1e27.firebaseapp.com" target="_blank">LIVE DEMO</a>
+## <a href="https://mhmd-tarek-mhmd.github.io/Tic-Tac-Toe" target="_blank">LIVE DEMO</a>
 
 
 ## Screenshots
