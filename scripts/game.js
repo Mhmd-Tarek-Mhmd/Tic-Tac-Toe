@@ -340,6 +340,7 @@
             width: 100%;
             position: absolute;
             text-align: center;
+            font-family: 'Arial';
             transform: translate(-50%, -50%);
           }
           span {
@@ -352,15 +353,16 @@
             border: none;
             padding: 10px;
             color: inherit;
+            font: inherit;
             font-size: 20px;
             cursor: pointer;
             border-radius: 3px;
+            text-transform: uppercase;
             background-color: #00bcd4;
           }
           h2 {
             margin-top: 0;
             font-size: 4.5rem;
-            font-family: 'Arial';
           }
         </style>
         `;
