@@ -2,7 +2,7 @@
 
 - The famous game using shadow elements & PWA tech.
 
-## <a href="https://mhmd-tarek-mhmd.github.io/Tic-Tac-Toe" target="_blank">🔴 LIVE DEMO</a>
+## <a href="https://mhmd-tarek-mhmd.github.io/Tic-Tac-Toe-PWA" target="_blank">🔴 LIVE DEMO</a>
 
 ## Screenshots
 
